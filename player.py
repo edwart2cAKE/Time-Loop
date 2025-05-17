@@ -1,6 +1,8 @@
 import pygame as pg
+from platform_1 import Platform
 
 import random
+import math
 
 
 class player(pg.sprite.Sprite):
@@ -11,9 +13,16 @@ class player(pg.sprite.Sprite):
         self.x = start_x
         self.y = start_y
 
-        self.scaled_img = pg.transform.scale(pg.image.load(
-            "image.png"), (self.width, self.height))
+        self.hitbox_width = width
+        self.hitbox_height = height
+        self.hitbox_x_offset = 0
+        self.hitbox_y_offset = 0
 
+        self.scaled_img = pg.transform.scale(pg.image.load(
+            "images/human2.png"), (self.width, self.height))
+
+        self.max_speed = 1000
+        self.accel = 2000
         self.y_vel = 0
         self.x_vel = 0
 
@@ -22,14 +31,21 @@ class player(pg.sprite.Sprite):
         self.ground_state = 1  # 1: on ground
         self.jumps_left = 1
 
+    def set_hitbox(self, x_offset, y_offset, width, height):
+        self.hitbox_width = width
+        self.hitbox_height = height
+        self.hitbox_x_offset = x_offset
+        self.hitbox_y_offset = y_offset
+
     def draw(self, wn, scroll: tuple = (0, 0)):
-        pg.draw.rect(wn, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), (self.x -
-                     scroll[0], self.y-scroll[1], self.width, self.height))
+        # draw hitbox
+        pg.draw.rect(wn, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), (self.x + self.hitbox_x_offset -
+                     scroll[0], self.y-scroll[1] + self.hitbox_y_offset, self.hitbox_width, self.hitbox_height))
 
         wn.blit(self.scaled_img, (self.x -
                                   scroll[0], self.y-scroll[1], self.width, self.height))
 
-    def update(self, keys, prev_keys, dt: float):
+    def update(self, keys, prev_keys, dt: float, platformlists: list[Platform] = []):
         # key input
         k_left_mono = keys[pg.K_LEFT] and not prev_keys[pg.K_LEFT]
         k_right_mono = keys[pg.K_RIGHT] and not prev_keys[pg.K_RIGHT]
@@ -39,30 +55,40 @@ class player(pg.sprite.Sprite):
         k_up = keys[pg.K_UP]
         k_down = keys[pg.K_DOWN] and not prev_keys[pg.K_DOWN]
 
-        self.collision()
+        self.collision(platformlists)
         if k_up_mono and self.jumps > 0:
             self.y_vel = -600
             self.ground_state = 0
             self.jumps -= 1
 
         # x movements
-        self.x += (1000*(k_right-k_left))*dt
+        self.x_vel += (self.accel*(k_right-k_left))*dt
+        self.x_vel = pg.math.clamp(self.x_vel, -self.max_speed, self.max_speed)*(0.01**dt)
+        self.x += self.x_vel*dt
 
         # velocity updates
-        self.y_vel += (500-150*k_up*(self.y<0))*dt
+        self.y_vel += (500-150*k_up*(self.y < 0))*dt
 
         # position updates
         self.y += self.y_vel * dt
 
-    def collision(self):
-        if self.y > 720-self.height:
-            self.y = 720-self.height
+        self.rect = pg.Rect(self.x, self.y, self.width, self.height)
+
+    def collision(self, platforms: list[Platform] = []):
+
+        # collision with the ground and ceiling
+        if self.y+self.hitbox_y_offset > 720-self.hitbox_height:
+            self.y = 720-self.hitbox_height-self.hitbox_y_offset
             self.y_vel = 0
             self.ground_state = 1
             self.jumps = 2
-        elif self.y < 0:
+        elif self.y+self.hitbox_y_offset < 0:
             self.y = 0
             self.y_vel = 0
             self.ground_state = 0
         else:
             self.ground_state = 0
+
+        # collision with platforms
+        for platform in platforms:
+            platform.collide(self)
