@@ -19,10 +19,12 @@ class player(pg.sprite.Sprite):
         self.hitbox_y_offset = 0
 
         self.scaled_img = pg.transform.scale(pg.image.load(
-            "images/human2.png"), (self.width, self.height))
+            "images/main_character.png"), (self.width, self.height))
 
         self.max_speed = 1000
         self.accel = 2000
+        self.slipperiness = 0.01
+        
         self.y_vel = 0
         self.x_vel = 0
 
@@ -63,7 +65,7 @@ class player(pg.sprite.Sprite):
 
         # x movements
         self.x_vel += (self.accel*(k_right-k_left))*dt
-        self.x_vel = pg.math.clamp(self.x_vel, -self.max_speed, self.max_speed)*(0.01**dt)
+        self.x_vel = pg.math.clamp(self.x_vel, -self.max_speed, self.max_speed)*(self.slipperiness**dt)
         self.x += self.x_vel*dt
 
         # velocity updates

@@ -108,3 +108,26 @@ class FastPlatform(Platform):
         # print("leaving slow platform")
         player.max_speed = 1000
         player.accel = 2000
+
+class IcePlatform(Platform):
+    def __init__(self, x, y, width, height, *groups) -> None:
+        super().__init__(x, y, width, height, *groups)
+        self.image = pg.transform.scale(pg.image.load(
+            "images/ice_platform.png"), (self.width, self.height))
+
+    def draw(self, wn, scroll: tuple = (0, 0)):
+        pg.draw.rect(wn, (135, 206, 235), (self.x - scroll[0], self.y -
+                                       scroll[1], self.width, self.height))
+        wn.blit(self.image, (self.x - scroll[0], self.y - scroll[1]))
+
+    def enter_platform(self, player):
+        # print("entering slow platform")
+        player.accel = 600
+        player.max_speed = 4000
+        player.slipperiness = 0.5
+
+    def leave_platform(self, player):
+        # print("leaving slow platform")
+        player.accel = 2000
+        player.max_speed = 1000
+        player.slipperiness = 0.01

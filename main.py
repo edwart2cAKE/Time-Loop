@@ -13,6 +13,7 @@ player1.set_hitbox(25, 0, 50, 200)
 platform1 = Platform(1000, 250, 220, 120)
 platform2 = SlowPlatform(700, 250, 220, 120)
 platform3 = FastPlatform(400, 250, 220, 120)
+platform4 = IcePlatform(100, 250, 220, 120)
 
 dt = 1/60
 
@@ -30,16 +31,17 @@ while True:
     keys_pressed = pg.key.get_pressed()
 
     player1.update(keys_pressed, prev_keys_pressed, dt,
-                   platformlists=[platform1, platform2, platform3])
+                   platformlists=[platform1, platform2, platform3, platform4])
 
     screen.fill("white")  # Fill the display with a solid color
 
     # Render the graphics here.
     # ...
-    player1.draw(screen)
     platform1.draw(screen)
     platform2.draw(screen)
     platform3.draw(screen)
+    platform4.draw(screen)
+    player1.draw(screen)
 
     pg.display.flip()                 # Refresh on-screen display
     prev_keys_pressed = keys_pressed
