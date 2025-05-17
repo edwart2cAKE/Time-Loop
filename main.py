@@ -42,6 +42,7 @@ while True:
     platform3.draw(screen)
     platform4.draw(screen)
     player1.draw(screen)
+    player1.draw_health(screen)
 
     pg.display.flip()                 # Refresh on-screen display
     prev_keys_pressed = keys_pressed

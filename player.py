@@ -24,7 +24,9 @@ class player(pg.sprite.Sprite):
         self.max_speed = 1000
         self.accel = 2000
         self.slipperiness = 0.01
-        
+
+        self.health = 100
+
         self.y_vel = 0
         self.x_vel = 0
 
@@ -41,13 +43,27 @@ class player(pg.sprite.Sprite):
 
     def draw(self, wn, scroll: tuple = (0, 0)):
         # draw hitbox
-        pg.draw.rect(wn, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), (self.x + self.hitbox_x_offset -
-                     scroll[0], self.y-scroll[1] + self.hitbox_y_offset, self.hitbox_width, self.hitbox_height))
+        #pg.draw.rect(wn, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), (self.x + self.hitbox_x_offset -
+        #             scroll[0], self.y-scroll[1] + self.hitbox_y_offset, self.hitbox_width, self.hitbox_height))
 
         wn.blit(self.scaled_img, (self.x -
                                   scroll[0], self.y-scroll[1], self.width, self.height))
 
+    def draw_health(self, wn, scroll: tuple = (0, 0)):
+        # health bar background
+        pg.draw.rect(wn, (30, 0, 0), (self.x-20 - scroll[0],
+                                      self.y - 20 - scroll[1], self.width+40, 20))
+        
+        # heath bar color lerps between red and green
+        health_color = (int(255*(100-self.health)/100), int(255*(self.health/100)), int(0))
+        
+        # health bar
+        pg.draw.rect(wn, health_color, (self.x - scroll[0]-15,
+                                      self.y - scroll[1]-15, (self.width+30)*(self.health/100), 10))
+
     def update(self, keys, prev_keys, dt: float, platformlists: list[Platform] = []):
+        self.health -= 10*dt
+        
         # key input
         k_left_mono = keys[pg.K_LEFT] and not prev_keys[pg.K_LEFT]
         k_right_mono = keys[pg.K_RIGHT] and not prev_keys[pg.K_RIGHT]
@@ -58,6 +74,8 @@ class player(pg.sprite.Sprite):
         k_down = keys[pg.K_DOWN] and not prev_keys[pg.K_DOWN]
 
         self.collision(platformlists)
+
+        # jump
         if k_up_mono and self.jumps > 0:
             self.y_vel = -600
             self.ground_state = 0
@@ -65,7 +83,8 @@ class player(pg.sprite.Sprite):
 
         # x movements
         self.x_vel += (self.accel*(k_right-k_left))*dt
-        self.x_vel = pg.math.clamp(self.x_vel, -self.max_speed, self.max_speed)*(self.slipperiness**dt)
+        self.x_vel = pg.math.clamp(
+            self.x_vel, -self.max_speed, self.max_speed)*(self.slipperiness**dt)
         self.x += self.x_vel*dt
 
         # velocity updates
