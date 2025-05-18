@@ -1,6 +1,7 @@
 import pygame as pg
 from platform_1 import *
 from player import player
+from npc import NPC
 
 pg.init()
 
@@ -15,7 +16,8 @@ platform2 = SlowPlatform(700, 250, 220, 120)
 platform3 = FastPlatform(400, 250, 220, 120)
 platform4 = IcePlatform(100, 250, 220, 120)
 
-
+king = NPC(1000, 500, 100, 200, "images/michael jordan.png")
+king.set_text("Heeheeheehaw, nothing interesting\nhappens if you slide on a wall and let go")
 
 dt = 1 / 60
 
@@ -56,6 +58,8 @@ while True:
     platform2.draw(screen, scroll)
     platform3.draw(screen, scroll)
     platform4.draw(screen, scroll)
+
+    king.draw(screen,player1, scroll)
     player1.draw(screen, scroll)
 
     # unscrolled graphics
