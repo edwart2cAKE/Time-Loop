@@ -15,9 +15,9 @@ platform2 = SlowPlatform(700, 250, 220, 120)
 platform3 = FastPlatform(400, 250, 220, 120)
 platform4 = IcePlatform(100, 250, 220, 120)
 
-dt = 1/60
+dt = 1 / 60
 
-scroll = [0,0]
+scroll = [-500, 0]
 
 prev_keys_pressed = pg.key.get_pressed()
 
@@ -32,8 +32,18 @@ while True:
     # ...
     keys_pressed = pg.key.get_pressed()
 
-    player1.update(keys_pressed, prev_keys_pressed, dt,
-                   platformlists=[platform1, platform2, platform3, platform4])
+    player1.update(
+        keys_pressed,
+        prev_keys_pressed,
+        dt,
+        platformlists=[platform1, platform2, platform3, platform4],
+    )
+
+    # set scroll to tween to player's position
+    scroll[0] += (player1.x - screen.get_width() / 2 - scroll[0]) * (5 * dt)
+    scroll[1] = player1.y // screen.get_height() * screen.get_height()
+    #print(player1.height // screen.get_height(), player1.height)
+    #print(scroll)
 
     screen.fill("white")  # Fill the display with a solid color
 
@@ -49,6 +59,6 @@ while True:
     # unscrolled graphics
     player1.draw_health(screen)
 
-    pg.display.flip()                 # Refresh on-screen display
+    pg.display.flip()  # Refresh on-screen display
     prev_keys_pressed = keys_pressed
-    dt = max(clock.tick(60), 1)/1000  # wait until next frame (at 60 FPS)
+    dt = max(clock.tick(60), 1) / 1000  # wait until next frame (at 60 FPS)

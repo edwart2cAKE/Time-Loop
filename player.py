@@ -116,10 +116,6 @@ class player(pg.sprite.Sprite):
             self.y_vel = 0
             self.ground_state = 1
             self.jumps = 2
-        elif self.y+self.hitbox_y_offset < 0:
-            self.y = 0
-            self.y_vel = 0
-            self.ground_state = 0
         else:
             self.ground_state = 0
 
