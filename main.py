@@ -17,6 +17,8 @@ platform4 = IcePlatform(100, 250, 220, 120)
 
 dt = 1/60
 
+scroll = [0,0]
+
 prev_keys_pressed = pg.key.get_pressed()
 
 while True:
@@ -37,11 +39,14 @@ while True:
 
     # Render the graphics here.
     # ...
-    platform1.draw(screen)
-    platform2.draw(screen)
-    platform3.draw(screen)
-    platform4.draw(screen)
-    player1.draw(screen)
+    # scrolled graphics
+    platform1.draw(screen, scroll)
+    platform2.draw(screen, scroll)
+    platform3.draw(screen, scroll)
+    platform4.draw(screen, scroll)
+    player1.draw(screen, scroll)
+
+    # unscrolled graphics
     player1.draw_health(screen)
 
     pg.display.flip()                 # Refresh on-screen display

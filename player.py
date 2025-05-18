@@ -5,6 +5,7 @@ import random
 import math
 
 
+
 class player(pg.sprite.Sprite):
     def __init__(self, width, height, start_x=0, start_y=0, *groups):
         super().__init__(*groups)
@@ -25,7 +26,10 @@ class player(pg.sprite.Sprite):
         self.accel = 2000
         self.slipperiness = 0.01
 
-        self.health = 100
+        self.health = 2
+        self.heart_size = 40
+        self.alive_heart_img = pg.transform.scale(pg.image.load("images/heartalive.png"), (self.heart_size, self.heart_size))
+        self.dead_heart_img = pg.transform.scale(pg.image.load("images/heartdead.png"), (self.heart_size, self.heart_size))
 
         self.y_vel = 0
         self.x_vel = 0
@@ -49,20 +53,23 @@ class player(pg.sprite.Sprite):
         wn.blit(self.scaled_img, (self.x -
                                   scroll[0], self.y-scroll[1], self.width, self.height))
 
-    def draw_health(self, wn, scroll: tuple = (0, 0)):
-        # health bar background
-        pg.draw.rect(wn, (30, 0, 0), (self.x-20 - scroll[0],
-                                      self.y - 20 - scroll[1], self.width+40, 20))
-        
-        # heath bar color lerps between red and green
-        health_color = (int(255*(100-self.health)/100), int(255*(self.health/100)), int(0))
-        
-        # health bar
-        pg.draw.rect(wn, health_color, (self.x - scroll[0]-15,
-                                      self.y - scroll[1]-15, (self.width+30)*(self.health/100), 10))
+    def draw_health(self, wn: pg.Surface):
+        health_bar_pos = (20,20)
+        heart_spacing = 20
+
+        if self.health == 3:
+            health_list = [1,1,1]
+        elif self.health == 2:
+            health_list = [1,1,0]
+        elif self.health == 1:
+            health_list = [1,0,0]
+        else:
+            health_list = [0,0,0]
+
+        for i, heart in enumerate(health_list):
+            wn.blit(self.alive_heart_img if heart else self.dead_heart_img, (health_bar_pos[0] + i*(heart_spacing+self.heart_size), health_bar_pos[1], self.heart_size, self.heart_size))
 
     def update(self, keys, prev_keys, dt: float, platformlists: list[Platform] = []):
-        self.health -= 10*dt
         
         # key input
         k_left_mono = keys[pg.K_LEFT] and not prev_keys[pg.K_LEFT]
