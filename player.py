@@ -67,11 +67,13 @@ class player(pg.sprite.Sprite):
         # key input
         k_left_mono = keys[pg.K_LEFT] and not prev_keys[pg.K_LEFT]
         k_right_mono = keys[pg.K_RIGHT] and not prev_keys[pg.K_RIGHT]
+        k_up_mono = keys[pg.K_UP] and not prev_keys[pg.K_UP]
+        k_down = keys[pg.K_DOWN] and not prev_keys[pg.K_DOWN]
+        k_e_mono = keys[pg.K_e] and not prev_keys[pg.K_e]
+        
         k_left = keys[pg.K_LEFT]
         k_right = keys[pg.K_RIGHT]
-        k_up_mono = keys[pg.K_UP] and not prev_keys[pg.K_UP]
         k_up = keys[pg.K_UP]
-        k_down = keys[pg.K_DOWN] and not prev_keys[pg.K_DOWN]
 
         self.collision(platformlists)
 
@@ -80,6 +82,10 @@ class player(pg.sprite.Sprite):
             self.y_vel = -600
             self.ground_state = 0
             self.jumps -= 1
+
+        # dash with e
+        if k_e_mono:
+            self.x_vel = (2*(self.x_vel > 0)-1) * self.max_speed
 
         # x movements
         self.x_vel += (self.accel*(k_right-k_left))*dt
