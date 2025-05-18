@@ -111,9 +111,12 @@ class MainScene(Scene):
         self.king.set_text(
             "Oh no, My scientists have realized that there is a loose time machine, and it resets back every 45 seconds!")
 
-        self.time_machine_img = pg.image.load("images/time_machine.png")
+        self.time_machine_img = pg.image.load("images/mchine.png")
         self.time_machine_img = pg.transform.scale(
             self.time_machine_img, (100, 100))
+
+        self.time_x = 3000
+        self.time_y = 300
 
         # self.dt = 1 / 60
         self.scroll = [-500.0, 0]
@@ -156,6 +159,10 @@ class MainScene(Scene):
         self.bald_guy.draw(self.screen, self.player, self.scroll)
         self.king.draw(self.screen, self.player, self.scroll)
         self.player.draw(self.screen, self.scroll)
+        
+        # draw the time machine
+        self.screen.blit(self.time_machine_img, (self.time_x - self.scroll[0],
+                                                 self.time_y - self.scroll[1], 100, 100))
 
         # unscrolled graphics
         self.player.draw_health(self.screen)
@@ -163,7 +170,8 @@ class MainScene(Scene):
     def touching_time_machine(self):
         # Check if the player is touching the time machine
         time_machine_rect = self.time_machine_img.get_rect(
-            topleft=(self.king.x + 50, self.king.y - 100))
+            topleft=(self.time_x, self.time_y))
+
         return self.player.rect.colliderect(time_machine_rect)
 
 
