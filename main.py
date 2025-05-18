@@ -15,6 +15,8 @@ platform2 = SlowPlatform(700, 250, 220, 120)
 platform3 = FastPlatform(400, 250, 220, 120)
 platform4 = IcePlatform(100, 250, 220, 120)
 
+
+
 dt = 1 / 60
 
 scroll = [-500, 0]
