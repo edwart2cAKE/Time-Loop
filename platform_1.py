@@ -9,7 +9,7 @@ class Platform(pg.sprite.Sprite):
         self.width = width
         self.height = height
         self.image = pg.transform.scale(pg.image.load(
-            "images/platform.png"), (self.width, self.height))
+            "images/Normal Platform.png"), (self.width, self.height))
         self.rect = pg.Rect(self.x, self.y, self.width, self.height)
 
         self.prev_being_touched = False
@@ -18,7 +18,7 @@ class Platform(pg.sprite.Sprite):
     def draw(self, wn, scroll: list[int] = [0, 0]):
         pg.draw.rect(wn, (0, 0, 255), (self.x - scroll[0], self.y -
                                        scroll[1], self.width, self.height))
-        # wn.blit(self.image, (self.x - scroll[0], self.y - scroll[1]))
+        wn.blit(self.image, (self.x - scroll[0], self.y - scroll[1]))
 
     def collide(self, player):
         prev_being_touched = self.being_touched
@@ -27,8 +27,8 @@ class Platform(pg.sprite.Sprite):
             if player.y+player.hitbox_y_offset + player.hitbox_height > self.y and player.y+player.hitbox_y_offset < self.y + self.height:
 
                 # collision from above+player.hitbox_y_offset
-                if self.y + self.height/10 > player.y+player.hitbox_y_offset + player.hitbox_height > self.y:
-                    # print("collision from above")
+                if self.y + player.y_vel*1/59+10 > player.y+player.hitbox_y_offset + player.hitbox_height > self.y:
+                    print("collision from above")
                     player.y = self.y - player.hitbox_height - player.hitbox_y_offset
                     player.y_vel = 0
                     player.ground_state = 1
@@ -38,20 +38,23 @@ class Platform(pg.sprite.Sprite):
                         self.enter_platform(player)
                     return 1
                 # collision from below
-                elif self.y + self.height*9/10 < player.y+player.hitbox_y_offset < self.y + self.height:
+                elif self.y + self.height - 10 + player.y_vel*1/59 < player.y+player.hitbox_y_offset < self.y + self.height:
+                    print("collision from below")
                     player.y = self.y + self.height - player.hitbox_y_offset
                     player.y_vel = 0
                     player.ground_state = 0
                     return 2
 
                 # collision from the left
-                elif self.x + self.width/10 > player.x + player.hitbox_x_offset + player.hitbox_width > self.x:
+                elif self.x + player.x_vel*1/59 + 10 > player.x + player.hitbox_x_offset + player.hitbox_width > self.x:
+                    print("collision from left")
                     player.x = self.x - player.hitbox_width - player.hitbox_x_offset
                     player.x_vel = 0
 
                     return 3
                 # collision from the right
-                elif self.x + self.width*9/10 < player.x + player.hitbox_x_offset < self.x+self.width:
+                elif self.x + player.x_vel*1/59 - 10 < player.x + player.hitbox_x_offset < self.x+self.width:
+                    print("collision from right")
                     player.x = self.x + self.width - player.hitbox_x_offset
                     player.x_vel = 0
 
@@ -72,7 +75,7 @@ class SlowPlatform(Platform):
     def __init__(self, x, y, width, height, *groups) -> None:
         super().__init__(x, y, width, height, *groups)
         self.image = pg.transform.scale(pg.image.load(
-            "images/slow_platform.png"), (self.width, self.height))
+            "images/Sticky Platform.png"), (self.width, self.height))
 
     def draw(self, wn, scroll: list[int] = [0, 0]):
         pg.draw.rect(wn, (150, 75, 0), (self.x - scroll[0], self.y -
@@ -92,7 +95,7 @@ class FastPlatform(Platform):
     def __init__(self, x, y, width, height, *groups) -> None:
         super().__init__(x, y, width, height, *groups)
         self.image = pg.transform.scale(pg.image.load(
-            "images/fast_platform.png"), (self.width, self.height))
+            "images/fast platform.png"), (self.width, self.height))
 
     def draw(self, wn, scroll:list[int] = [0, 0]):
         pg.draw.rect(wn, (255, 0, 0), (self.x - scroll[0], self.y -
@@ -113,7 +116,7 @@ class IcePlatform(Platform):
     def __init__(self, x, y, width, height, *groups) -> None:
         super().__init__(x, y, width, height, *groups)
         self.image = pg.transform.scale(pg.image.load(
-            "images/ice_platform.png"), (self.width, self.height))
+            "images/Icy Platform.png"), (self.width, self.height))
 
     def draw(self, wn, scroll: list[int] = [0, 0]):
         pg.draw.rect(wn, (135, 206, 235), (self.x - scroll[0], self.y -

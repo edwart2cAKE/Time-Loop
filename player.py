@@ -52,6 +52,8 @@ class player(pg.sprite.Sprite):
 
         self.ground_state = 1  # 1: on ground
         self.jumps_left = 1
+        
+        self.rect = pg.Rect(self.x, self.y, self.width, self.height)
 
     def set_hitbox(self, x_offset, y_offset, width, height):
         self.hitbox_width = width
@@ -88,7 +90,7 @@ class player(pg.sprite.Sprite):
         )
 
         wn.blit(
-            anim_frame,
+            anim_frame if abs(self.x_vel)>10 else self.scaled_img,
             (self.x - scroll[0]-15*(anim_frame==self.left_scaled_run1), self.y - scroll[1], self.width, self.height),
         )
         self.px_vel = self.x_vel
@@ -160,8 +162,8 @@ class player(pg.sprite.Sprite):
     def collision(self, platforms: list[Platform] = []):
 
         # collision with the ground and ceiling
-        if self.y + self.hitbox_y_offset > 720 - self.hitbox_height:
-            self.y = 720 - self.hitbox_height - self.hitbox_y_offset
+        if self.y + self.hitbox_y_offset > 7200 - self.hitbox_height:
+            self.y = 7200 - self.hitbox_height - self.hitbox_y_offset
             self.y_vel = 0
             self.ground_state = 1
             self.jumps = 2

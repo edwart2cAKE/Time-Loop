@@ -5,25 +5,17 @@ pg.init()
 screen = pg.display.set_mode((1280, 720))
 
 clock = pg.time.Clock()
-player1 = player(100, 200, 0, 100)
-player1.set_hitbox(25, 0, 50, 200)
-
-platform1 = Platform(1000, 250, 220, 120)
-platform2 = SlowPlatform(700, 250, 220, 120)
-platform3 = FastPlatform(400, 250, 220, 120)
-platform4 = IcePlatform(100, 250, 220, 120)
-
-king = NPC(1000, 500, 100, 200, "images/michael jordan.png")
-king.set_text(
-    "Heeheeheehaw, nothing interesting\nhappens if you slide on a wall and let go")
 
 dt = 1 / 60
 
-scroll = [-500.0, 0, 0]
-
-prev_keys_pressed = pg.key.get_pressed()
-
 gameplay = MainScene(screen, lambda scene: None)
+
+game_over_scene = TryAgainScene(screen, lambda scene: None)
+
+won_scene = GameWonScene(screen, lambda scene: None)
+
+time_passed = 0
+game_state = 0  # 0: playing, 1: game over, 2: game won
 
 while True:
     # Process system inputs.
@@ -36,15 +28,36 @@ while True:
     # ...
 
     # Update the scene here
-    gameplay.update(dt)
+    if game_state == 0:
+        gameplay.update(dt)
+        if gameplay.touching_time_machine():
+            game_state = 2
+            time_passed = 0
+    elif game_state == 1:
+        game_over_scene.update()
+        if game_over_scene.if_clicked():
+            gameplay = MainScene(screen, lambda scene: None)
+            game_over = False
+            time_passed = 0
+    elif game_state == 2:
+        won_scene.update()
 
 
     screen.fill("white")  # Fill the display with a solid color
 
     # Render the graphics here.
     # ...
-    gameplay.draw()
+    if game_state == 0:
+        gameplay.draw()
+    elif game_state == 1:
+        game_over_scene.draw()
+    elif game_state == 2:
+        won_scene.draw()
 
     pg.display.flip()  # Refresh on-screen display
     # prev_keys_pressed = keys_pressed
-    dt = max(clock.tick(60), 1) / 1000  # wait until next frame (at 60 FPS)
+    dt = max(clock.tick_busy_loop(60), 1) / 1000  # wait until next frame (at 60 FPS)
+    time_passed += dt
+    if time_passed > 45:
+        game_over = True
+    
