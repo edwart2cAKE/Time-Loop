@@ -59,7 +59,7 @@ class player(pg.sprite.Sprite):
         self.hitbox_x_offset = x_offset
         self.hitbox_y_offset = y_offset
 
-    def draw(self, wn, scroll: tuple = (0, 0)):
+    def draw(self, wn, scroll: list[int] = [0, 0]):
         # draw hitbox
         # pg.draw.rect(wn, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), (self.x + self.hitbox_x_offset -
         #             scroll[0], self.y-scroll[1] + self.hitbox_y_offset, self.hitbox_width, self.hitbox_height))

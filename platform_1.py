@@ -15,7 +15,7 @@ class Platform(pg.sprite.Sprite):
         self.prev_being_touched = False
         self.being_touched = False
 
-    def draw(self, wn, scroll: tuple = (0, 0)):
+    def draw(self, wn, scroll: list[int] = [0, 0]):
         pg.draw.rect(wn, (0, 0, 255), (self.x - scroll[0], self.y -
                                        scroll[1], self.width, self.height))
         # wn.blit(self.image, (self.x - scroll[0], self.y - scroll[1]))
@@ -74,14 +74,14 @@ class SlowPlatform(Platform):
         self.image = pg.transform.scale(pg.image.load(
             "images/slow_platform.png"), (self.width, self.height))
 
-    def draw(self, wn, scroll: tuple = (0, 0)):
+    def draw(self, wn, scroll: list[int] = [0, 0]):
         pg.draw.rect(wn, (150, 75, 0), (self.x - scroll[0], self.y -
                                         scroll[1], self.width, self.height))
         wn.blit(self.image, (self.x - scroll[0], self.y - scroll[1]))
 
     def enter_platform(self, player):
         print("entering slow platform")
-        player.max_speed = 100
+        player.max_speed = 300
 
     def leave_platform(self, player):
         print("leaving slow platform")
@@ -94,7 +94,7 @@ class FastPlatform(Platform):
         self.image = pg.transform.scale(pg.image.load(
             "images/fast_platform.png"), (self.width, self.height))
 
-    def draw(self, wn, scroll: tuple = (0, 0)):
+    def draw(self, wn, scroll:list[int] = [0, 0]):
         pg.draw.rect(wn, (255, 0, 0), (self.x - scroll[0], self.y -
                                        scroll[1], self.width, self.height))
         wn.blit(self.image, (self.x - scroll[0], self.y - scroll[1]))
@@ -115,7 +115,7 @@ class IcePlatform(Platform):
         self.image = pg.transform.scale(pg.image.load(
             "images/ice_platform.png"), (self.width, self.height))
 
-    def draw(self, wn, scroll: tuple = (0, 0)):
+    def draw(self, wn, scroll: list[int] = [0, 0]):
         pg.draw.rect(wn, (135, 206, 235), (self.x - scroll[0], self.y -
                                        scroll[1], self.width, self.height))
         wn.blit(self.image, (self.x - scroll[0], self.y - scroll[1]))

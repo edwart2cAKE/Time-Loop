@@ -13,7 +13,7 @@ class NPC(pg.sprite.Sprite):
         self.rect = pg.Rect(self.x, self.y, self.width, self.height)
 
         self.text = "asdkljh"
-        self.font = pg.font.Font("fonts/Minecrafter.Reg.ttf")
+        self.font = pg.font.Font("fonts/Minecrafter.Reg.ttf", 20)
 
         self.scaled_img = pg.transform.scale(
             pg.image.load(img_filename), (self.width, self.height)
@@ -22,7 +22,7 @@ class NPC(pg.sprite.Sprite):
     def set_text(self, text):
         self.text = text
 
-    def draw(self, wn: pg.surface.Surface, p: player, scroll: tuple = (0, 0)):
+    def draw(self, wn: pg.surface.Surface, p: player, scroll: list[int] = [0, 0]):
         wn.blit(
             self.scaled_img,
             (self.x - scroll[0], self.y - scroll[1], self.width, self.height),
